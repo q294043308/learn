@@ -161,4 +161,32 @@ func canFinishSub(limit [][]int, visited []byte, index int) bool {
 	return true
 }
 
-// 208. Implement Trie (Prefix Tree)
+// 209. Minimum Size Subarray Sum
+func MinSubArrayLen(target int, nums []int) int {
+	min := common.MAXINTNUM
+	left := 0
+	right := 0
+	sum := 0
+
+	for _, cur := range nums {
+		sum += cur
+		right++
+		if sum < target {
+			continue
+		}
+
+		for sum >= target {
+			if right-left < min {
+				min = right - left
+			}
+			sum -= nums[left]
+			left++
+		}
+	}
+
+	if min == common.MAXINTNUM {
+		min = 0
+	}
+
+	return min
+}

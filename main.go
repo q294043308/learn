@@ -1,12 +1,7 @@
 package main
 
-import (
-	"learn/function"
-)
-
-var aaa int64 = 6
+import "learn/function"
 
 func main() {
-	r := function.CanFinish(5, [][]int{{1, 0}, {0, 1}, {3, 1}, {3, 2}})
-	println(r)
+	println(function.MinSubArrayLen(11, []int{1, 1, 1, 1}))
 }
