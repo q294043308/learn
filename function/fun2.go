@@ -190,3 +190,47 @@ func MinSubArrayLen(target int, nums []int) int {
 
 	return min
 }
+
+// 210. FindOrder
+func FindOrder(numCourses int, prerequisites [][]int) []int {
+	OrderBy := make(map[int]map[int]interface{})
+	res := []int{}
+
+	for i := 0; i < numCourses; i++ {
+		OrderBy[i] = map[int]interface{}{}
+	}
+
+	for _, prerequisite := range prerequisites {
+		if _, ok := OrderBy[prerequisite[0]]; ok {
+			OrderBy[prerequisite[0]][prerequisite[1]] = struct{}{}
+		} else {
+			OrderBy[prerequisite[0]] = map[int]interface{}{prerequisite[1]: struct{}{}}
+		}
+	}
+
+	ctn := true
+	delCourses := make(map[int]interface{})
+	for ctn {
+		ctn = false
+		for courses, orders := range OrderBy {
+			for order := range orders {
+				if _, ok := delCourses[order]; ok {
+					delete(orders, order)
+				}
+			}
+
+			if len(orders) == 0 {
+				res = append(res, courses)
+				ctn = true
+				delCourses[courses] = struct{}{}
+				delete(OrderBy, courses)
+			}
+		}
+	}
+
+	if len(res) != numCourses {
+		res = []int{}
+	}
+
+	return res
+}

@@ -1,7 +1,16 @@
 package main
 
-import "learn/function"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 func main() {
-	println(function.MinSubArrayLen(11, []int{1, 1, 1, 1}))
+	var A []int
+	var B []int
+	B = make([]int, 0)
+	a, _ := json.Marshal(A)
+	b, _ := json.Marshal(B)
+	fmt.Println(string(a))
+	fmt.Println(string(b))
 }

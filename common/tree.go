@@ -12,7 +12,7 @@ type Trie struct {
 	exist bool
 }
 
-func Constructor() Trie {
+func ConstructorW() Trie {
 	return Trie{
 		key: make([]*Trie, 256),
 	}
