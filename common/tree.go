@@ -50,3 +50,8 @@ func (this *Trie) StartsWith(prefix string) bool {
 	}
 	return true
 }
+
+// DictNode 字典树
+type DictNode struct {
+	Childs []*DictNode
+}

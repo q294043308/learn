@@ -1,16 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"learn/function"
 )
 
 func main() {
-	var A []int
-	var B []int
-	B = make([]int, 0)
-	a, _ := json.Marshal(A)
-	b, _ := json.Marshal(B)
-	fmt.Println(string(a))
-	fmt.Println(string(b))
+	board := [][]byte{{'a', 'b', 'c'}, {'a', 'e', 'd'}, {'a', 'f', 'g'}}
+	words := []string{"abcdefg", "gfedcbaaa", "eaabcdgfa", "befa", "dgc", "ade"}
+	fmt.Println(function.FindWords(board, words))
+
 }

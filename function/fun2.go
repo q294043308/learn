@@ -234,3 +234,150 @@ func FindOrder(numCourses int, prerequisites [][]int) []int {
 
 	return res
 }
+
+// // FindWords 单次搜索（时间复杂度较高，废弃）
+// func FindWordsAb(board [][]byte, words []string) []string {
+// 	var res []string
+// 	var exist [][]bool
+
+// 	root := &common.DictNode{
+// 		Childs: make([]*common.DictNode, common.BIG_ENGLISH_CHAR_NUM),
+// 	}
+
+// 	exist = make([][]bool, len(board))
+// 	for i, line := range board {
+// 		exist[i] = make([]bool, len(line))
+// 	}
+
+// 	for _, word := range words {
+// 		if findWordByDictAb(word, root) {
+// 			res = append(res, word)
+// 			continue
+// 		}
+
+// 		for i, line := range board {
+// 			for j := range line {
+// 				if findWordSubAb(board, exist, word, root, i, j) {
+// 					res = append(res, word)
+// 					goto end
+// 				}
+// 			}
+// 		}
+// 	end:
+// 	}
+
+// 	return res
+// }
+
+// // findWordByDict 查询字典是否存在（时间复杂度较高，废弃）
+// func findWordByDictAb(word string, root *common.DictNode) bool {
+// 	for _, byt := range word {
+// 		if root.Childs[byt-'a'] == nil {
+// 			return false
+// 		}
+// 		root = root.Childs[byt-'a']
+// 	}
+
+// 	return true
+// }
+
+// // findWordSub 递归查询 （时间复杂度较高，废弃）
+// func findWordSubAb(board [][]byte, exist [][]bool, word string, root *common.DictNode, i, j int) bool {
+// 	if len(word) == 0 {
+// 		return true
+// 	}
+
+// 	if i < 0 || j < 0 || i >= len(board) || j >= len(board[i]) || exist[i][j] {
+// 		return false
+// 	}
+
+// 	if board[i][j] == word[0] {
+// 		root.Childs[word[0]-'a'] = &common.DictNode{
+// 			Childs: make([]*common.DictNode, common.BIG_ENGLISH_CHAR_NUM),
+// 		}
+
+// 		exist[i][j] = true
+// 		ok := findWordSubAb(board, exist, word[1:], root.Childs[word[0]-'a'], i+1, j) ||
+// 			findWordSubAb(board, exist, word[1:], root.Childs[word[0]-'a'], i, j+1) ||
+// 			findWordSubAb(board, exist, word[1:], root.Childs[word[0]-'a'], i-1, j) ||
+// 			findWordSubAb(board, exist, word[1:], root.Childs[word[0]-'a'], i, j-1)
+
+// 		exist[i][j] = false
+// 		return ok
+// 	}
+
+// 	return false
+// }
+
+// FindWords 单次搜索
+func FindWords(board [][]byte, words []string) []string {
+	var res []string
+	var exist [][]bool
+
+	root := &common.DictNode{
+		Childs: make([]*common.DictNode, 26),
+	}
+
+	exist = make([][]bool, len(board))
+	for i, line := range board {
+		exist[i] = make([]bool, len(line))
+	}
+
+	maxLenth := 0
+	for _, word := range words {
+		if len(word) > maxLenth {
+			maxLenth = len(word)
+		}
+	}
+
+	for i, line := range board {
+		for j := range line {
+			buildWordTree(board, exist, root, i, j, 0, maxLenth)
+		}
+	}
+
+	for _, word := range words {
+		if findWordByDict(word, root) {
+			res = append(res, word)
+			continue
+		}
+	}
+
+	return res
+}
+
+// findWordByDict 查询字典是否存在
+func findWordByDict(word string, root *common.DictNode) bool {
+	for _, byt := range word {
+		if root.Childs[byt-'a'] == nil {
+			return false
+		}
+		root = root.Childs[byt-'a']
+	}
+
+	return true
+}
+
+// buildWordTree 字典树搭建
+func buildWordTree(board [][]byte, exist [][]bool, root *common.DictNode, i, j, high, maxLenth int) {
+	if i < 0 || j < 0 || i >= len(board) || j >= len(board[i]) || exist[i][j] || high >= maxLenth {
+		return
+	}
+
+	curNode := root.Childs[board[i][j]-'a']
+	if curNode == nil {
+		curNode = &common.DictNode{
+			Childs: make([]*common.DictNode, 26),
+		}
+
+		root.Childs[board[i][j]-'a'] = curNode
+	}
+
+	exist[i][j] = true
+	buildWordTree(board, exist, curNode, i+1, j, high+1, maxLenth)
+	buildWordTree(board, exist, curNode, i, j+1, high+1, maxLenth)
+	buildWordTree(board, exist, curNode, i-1, j, high+1, maxLenth)
+	buildWordTree(board, exist, curNode, i, j-1, high+1, maxLenth)
+	exist[i][j] = false
+	return
+}
